@@ -1,0 +1,14 @@
+From	To	Amount	Currency
+Valid	Valid	[ERROR] Zero	Different
+[ERROR] Frozen	Valid	[ERROR] OverBalance	Same
+[ERROR] Missing	[ERROR] SameAsFrom	Normal	Same
+[ERROR] Frozen	[ERROR] Missing	[ERROR] Zero	Different
+[ERROR] Missing	Valid	[ERROR] OverLimit	Same
+[ERROR] Frozen	[ERROR] SameAsFrom	[ERROR] OverLimit	Different
+[ERROR] Frozen	Valid	Normal	Different
+Valid	[ERROR] Missing	Normal	Same
+[ERROR] Missing	[ERROR] Missing	[ERROR] OverBalance	Different
+Valid	[ERROR] SameAsFrom	[ERROR] Zero	Same
+Valid	[ERROR] Missing	[ERROR] OverLimit	Same
+[ERROR] Missing	[ERROR] Missing	[ERROR] Zero	Same
+Valid	[ERROR] SameAsFrom	[ERROR] OverBalance	Same

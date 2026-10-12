@@ -1,0 +1,4 @@
+From: Valid, [ERROR] Frozen, [ERROR] Missing
+To: Valid, [ERROR] Missing, [ERROR] SameAsFrom
+Amount: Normal, [ERROR] Zero, [ERROR] OverBalance, [ERROR] OverLimit
+Currency: Same, Different
