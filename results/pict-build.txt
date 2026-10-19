@@ -1,4 +1,11 @@
-pict commit: ab76c25 --date: Bump the github-actions group with 3 updates (#168)hort
-Pairwise Independent Combinatorial Testing
+$ cmake -S tools/pict -B /tmp/pict-build-lab06-20261019
+-- PICT version 3.7.4
+-- Configuring done (0.0s)
+-- Generating done (0.0s)
+-- Build files have been written to: /tmp/pict-build-lab06-20261019
 
-Usage: pict model [options]
+$ cmake --build /tmp/pict-build-lab06-20261019 --parallel 2
+[ 23%] Built target pict_api
+[ 28%] Built target pict_benchmark
+[ 63%] Built target pict_cli
+[100%] Built target pict_dll
