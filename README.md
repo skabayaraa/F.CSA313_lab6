@@ -1,66 +1,91 @@
-# CSA313 лаборатори №6
+# CSA313 лаборатори №6: Category-Partition ба PICT
 
-**Оюутан:** Энхсаруул
+**Оюутны нэр:** Эрдэнэбаярын Энхсаруул
 
-**Код:** B232270145
+**Оюутны код:** B232270145
 
-Энэ лабораторийн ажлаар PICT ашиглан pairwise болон higher-order комбинатор тестийн тохиолдлуудыг үүсгэж, хязгаарлалттай, хязгаарлалтгүй, сөрөг утгатай загваруудын үр дүнг харьцуулав.
+**Хичээл:** Программ хангамжийн чанарын баталгаа ба тест (F.CSA313)
 
-## A. Загвар ба тестийн генераци
+## A. Category-Partition арга
 
-### A1. Browser загварын pairwise тест
+**Тестлэх функц:** `POST /transfer { "from": ID, "to": ID, "amount": NUM, "currency": CODE }`
 
-`browser.model` нь Content, Cookies, Popups, Addons, Attacks, Forgeries гэсэн 6 параметртэй. Хүчин зүйлсийн бүх боломжит хосын утгууд хамрагдах тестүүдийг PICT-ээр үүсгэсэн.
+### A1. Сонголт ба төлөөлөх утгууд
 
-Үр дүн: [results/browser-2way.txt](./results/browser-2way.txt).
+| Параметр | Сонголт | Төлөөлөх утгууд |
+|---|---|---|
+| `from` | Илгээгч дансны төлөв | Valid, Frozen, Missing |
+| `to` | Хүлээн авагчийн төлөв, `from`-той харьцаа | Valid, Missing, SameAsFrom |
+| `amount` | Дүнгийн утга, хэмжээ | Zero, Normal, OverBalance, OverLimit |
+| `currency` | Дансны валюттай харьцуулалт | Same, Different |
 
-### A2. Browser загварын 3-way тест
+**Далд орчны сонголт (setup):**
 
-Ижил загварт гуравласан хүчин зүйлсийн утгын бүх боломжит хослолыг хамруулахын тулд 3-way interaction strength ашигласан.
+- Өдрийн лимит: Normal / Exceeded (`OverLimit` үүсгэнэ).
+- Үлдэгдэл: Sufficient / Insufficient (`OverBalance` үүсгэнэ).
+- Ханш: 1 / өөр ханш (`Different` үед хөрвүүлэлт хийнэ).
 
-Үр дүн: [results/browser-3way.txt](./results/browser-3way.txt).
+### A2. Тэмдэглэгээ, хязгаарлалт ба комбинацийн тооцоо
 
-### A3. Шилжүүлгийн хязгаарлалттай загвар
+- `[SINGLE]` нь `from = Missing` эсвэл `to = Missing` үед бусад утгаас үл хамааран тухайн Missing нөхцөлийг нэг representative кейсээр шалгахыг заана.
+- `[ERROR]` нь `Frozen`, `SameAsFrom`, `Zero`, `OverBalance`, `OverLimit` утга тус бүрийг өөрийн алдааны ангитай нь шалгахыг заана.
+- `transfer.model` загварт `from` эсвэл `to` нь Missing бол `amount` Normal байх `IF` хязгаарлалт тавьсан. Энэ нь шилжүүлэг хийх боломжгүй данстай үед дүнгийн алдааг давхар шалгахаас сэргийлнэ.
+- Бүрэн Cartesian олонлог: `N = 3 × 3 × 4 × 2 = 72`.
+- Хязгаарласан representative олонлог: хоёр амжилттай валютын хувилбар + долоон алдааны анги (Missing from, Frozen, Missing to, SameAsFrom, Zero, OverBalance, OverLimit) = `M = 9`. Ингэснээр ангиллын үндсэн тохиолдол `72 → 9` болно. A3-ын 10 дахь мөр нь эдгээр есөн ангид нэмэх, давхар алдааны давуу эрэмбийг шалгах тусгай тохиолдол юм.
+- Давхар алдааны шалгах эрэмбэ: `from → to → amount → currency`. Иймээс `from` дээрх алдаа бусад алдаанаас түрүүлж буцаагдана.
 
-`transfer.model` нь From, To, Amount, Currency параметрүүдийг агуулна. From эсвэл To нь Missing үед Amount нь Normal байх нөхцөлийг загварт оруулсан. PICT-ийн гаргасан pairwise тестүүд хязгаарлалтыг зөрчихгүй.
+### A3. Transfer функцийн спецификацийн хүснэгт
 
-Үр дүн: [results/transfer.txt](./results/transfer.txt).
-
-## B. Нэмэлт загвар, тестийн тохиолдлууд
-
-### B1. Хязгаарлалтгүй шилжүүлгийн загвар
-
-`transfer-nc.model`-д шилжүүлгийн хүчин зүйлсийг хязгаарлалтгүйгээр тодорхойлсон. Үүнийг хязгаарлалттай хувилбартай харьцуулахад зөвшөөрөгдөх орон зай болон үүсэх тестийн ялгаа харагдана.
-
-Үр дүн: [results/transfer-nc.txt](./results/transfer-nc.txt).
-
-### B2. Сөрөг утгатай тест
-
-`transfer-neg.model`-д `~` угтварыг PICT-ийн сөрөг утгын тэмдэглэгээ болгон ашиглав. Ингэснээр Frozen, Missing, Zero, OverBalance, OverLimit, SameAsFrom зэрэг буруу/сөрөг нөхцөлүүдийг энгийн зөв утгуудаас ялган тестэд оруулна.
-
-Үр дүн: [results/transfer-neg.txt](./results/transfer-neg.txt).
-
-### B3. Туршилтын өгөгдөл
-
-Дараах арван мөр нь browser-ийн параметрийн туршилтын өгөгдөл юм.
-
-| № | Content | Cookies | Popups | Addons | Attacks | Forgeries |
+| № | From | To | Amount | Currency | Хүлээгдэх үр дүн (Oracle) | Тайлбар |
 |---:|---|---|---|---|---|---|
-| 1 | Allow | Restrict | Yes | No | No | Yes |
-| 2 | Block | Allow | Yes | Yes | Yes | No |
-| 3 | Restrict | Restrict | No | No | Yes | No |
-| 4 | Allow | Block | No | Yes | No | No |
-| 5 | Block | Block | No | No | Yes | Yes |
-| 6 | Block | Restrict | Yes | Yes | No | Yes |
-| 7 | Allow | Allow | No | No | No | Yes |
-| 8 | Restrict | Allow | Yes | Yes | No | Yes |
-| 9 | Restrict | Block | Yes | No | Yes | No |
-| 10 | Allow | Block | Yes | Yes | Yes | No |
+| 1 | Valid | Valid | Normal | Same | `201 OK` | Амжилттай шилжүүлэг |
+| 2 | Valid | Valid | Normal | Different | `201 OK` | Валют хөрвүүлэлт |
+| 3 | Missing | Valid | Normal | Same | `200 ERROR_NO_FROM` | `[SINGLE]` |
+| 4 | Frozen | Valid | Normal | Same | `200 ERROR_FROZEN` | Frozen дансны алдаа |
+| 5 | Valid | Missing | Normal | Same | `200 ERROR_NO_TO` | `[SINGLE]` |
+| 6 | Valid | SameAsFrom | Normal | Same | `200 ERROR_SAME_ACCOUNT` | Ижил дансны алдаа |
+| 7 | Valid | Valid | Zero | Same | `200 ERROR_BAD_AMOUNT` | Дүн тэг |
+| 8 | Valid | Valid | OverBalance | Same | `200 ERROR_INSUFFICIENT` | Үлдэгдэл хүрэлцэхгүй |
+| 9 | Valid | Valid | OverLimit | Same | `200 ERROR_LIMIT` | Өдрийн лимит хэтэрсэн |
+| 10 | Frozen | Missing | OverBalance | Different | `200 ERROR_FROZEN` | Давхар алдаа; `from` түрүүлнэ |
 
-## Greedy алгоритмын тайлбар
+## B. Microsoft PICT
 
-PICT нь боломжит тестийн тохиолдлуудаас хамрагдаагүй хос (эсвэл 3-way тохиргоонд гуравласан) утгын хослолыг хамгийн олноор хамруулах сонголтыг давтан хийдэг greedy арга ашиглана. Шинэ тест бүрээр хамрагдсан хослолуудыг тэмдэглэж, шаардлагатай хамрах хүрээ бүрдэх хүртэл үргэлжлүүлнэ. Ингэснээр бүх Cartesian product-ийг шалгахтай харьцуулахад тестийн тоо багасна. Greedy сонголт нь практик цөөн тест үүсгэдэг боловч бүх тохиолдолд хамгийн цөөн тестийн багцыг баталгаажуулахгүй.
+PICT эх кодыг репод оруулаагүй. Build-д ашигласан Microsoft PICT эхийн commit нь `ab76c2548f551fcb46314e58653a1bd1172f3a72`; эх кодоос бүтээж ажиллуулсан командын бүртгэл [results/pict-build.txt](./results/pict-build.txt)-д байна.
 
-## Дүгнэлт
+### B1. Model-уудын мөрийн тооны харьцуулалт
 
-PICT-ийн загварчилсан хязгаарлалт нь боломжгүй шилжүүлгийн тохиолдлуудыг хасаж, `~` тэмдэглэгээ нь сөрөг утгуудыг тусгайлан туршихад тусаллаа. Browser загвар дээрх 2-way болон 3-way генераци нь харилцан үйлчлэлийн хамрах түвшин өсөхөд илүү олон тест шаардагддагийг харуулсан. Ийм комбинатор тест нь бүх боломжит оролтын бүрэн шалгалтыг орлохгүй ч, олон параметрийн харилцан үйлчлэлийг цөөн тестээр системтэй хамрах үр дүнтэй арга юм.
+Доорх тоо нь үр дүнгийн файлын толгой мөрийг хассан тестийн мөрийн тоо юм.
+
+| Model | Хамралт / нөхцөл | Тестийн мөр |
+|---|---|---:|
+| `browser.model` | Pairwise (2-way) | 10 |
+| `browser.model` | 3-way | 20 |
+| `transfer-nc.model` | Хязгаарлалтгүй pairwise | 13 |
+| `transfer.model` | Missing үед Normal гэсэн `IF` хязгаарлалттай | 12 |
+| `transfer-neg.model` | `~` сөрөг утгын тэмдэглэгээтэй | 16 |
+
+Үр дүнгүүд: [browser-2way](./results/browser-2way.txt), [browser-3way](./results/browser-3way.txt), [transfer-nc](./results/transfer-nc.txt), [transfer](./results/transfer.txt), [transfer-neg](./results/transfer-neg.txt).
+
+### B2. PICT гаралтаас гаргасан бодит тест кейсүүд
+
+Доорх `transfer-neg` мөрийн дугаарууд нь толгой мөрийг тооцоогүй PICT-ийн өгөгдлийн мөрийн дугаар юм.
+
+1. **Амжилттай шилжүүлэг — `transfer-neg`, мөр 1 (`Valid, Valid, Normal, Same`).**
+   - **Setup:** `A1` идэвхтэй, үлдэгдэл 500,000₮, өдрийн лимит 1,000,000₮; `B1` идэвхтэй; валют MNT.
+   - **Оролт:** `POST /transfer {"from":"A1","to":"B1","amount":50000,"currency":"MNT"}`
+   - **Oracle:** `201 OK`, `{"result":"OK"}`.
+2. **Нэг алдаатай кейс — `transfer-neg`, мөр 8 (`~Missing, Valid, Normal, Same`).**
+   - **Setup:** `INVALID_ACC` данс байхгүй; `B1` идэвхтэй; дүн 50,000₮-ийг шилжүүлэхэд хангалттай үлдэгдэл, лимиттэй.
+   - **Оролт:** `POST /transfer {"from":"INVALID_ACC","to":"B1","amount":50000,"currency":"MNT"}`
+   - **Oracle:** `200 OK`, `{"result":"ERROR_NO_FROM"}`.
+3. **Нэг алдаатай кейс — `transfer-neg`, мөр 12 (`~Frozen, Valid, Normal, Same`).**
+   - **Setup:** `F1` данс Frozen; `B1` идэвхтэй; дүн 50,000₮-ийг шилжүүлэхэд хангалттай үлдэгдэл, лимиттэй.
+   - **Оролт:** `POST /transfer {"from":"F1","to":"B1","amount":50000,"currency":"MNT"}`
+   - **Oracle:** `200 OK`, `{"result":"ERROR_FROZEN"}`.
+
+### B3. Greedy алгоритм ба дүгнэлт
+
+Greedy аргаар дараагийн тестийн мөрийг сонгохдоо одоогоор хамрагдаагүй параметрийн хос утгуудыг аль болох олныг хамруулахыг зорьдог. Шинэ мөр нэмэх бүрд хамрагдсан хосуудыг шинэчилж, шаардлагатай хосын хамралт бүрдэх хүртэл сонголтоо үргэлжлүүлнэ. Ийм аргаар бүх боломжит Cartesian комбинацийг туршихаас цөөн мөрөөр pairwise хамралт гаргаж болно. Энэ нь эвристик арга тул бүх загварт математик абсолют хамгийн цөөн мөрийг олно гэж баталдаггүй.
+
+Category-Partition нь параметрийн ангилал, бизнесийн утга, алдааны үр дүнг тодорхой болгож өгдөг. Энэ аргаар transfer функцийн үндсэн төлөөлөх утгууд болон давхар алдааны шалгах эрэмбийг тодорхойллоо. PICT нь browser болон transfer загваруудын хосын хамралтыг автоматжуулж, бүх комбинацийг жагсаахгүйгээр тестийн багц үүсгэлээ. Хязгаарлалттай transfer загвар 12 мөр, хязгаарлалтгүй загвар 13 мөр үүсгэсэн. Сөрөг утгын `~` тэмдэглэгээгээр Missing болон Frozen дансны тестүүдийг бусад хүчин зүйлстэй хослуулан шалгав.

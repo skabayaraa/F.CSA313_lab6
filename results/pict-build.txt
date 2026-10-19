@@ -1,11 +1,81 @@
-$ cmake -S tools/pict -B /tmp/pict-build-lab06-20261019
--- PICT version 3.7.4
--- Configuring done (0.0s)
--- Generating done (0.0s)
--- Build files have been written to: /tmp/pict-build-lab06-20261019
+PICT source: https://github.com/microsoft/pict
+PICT commit: ab76c2548f551fcb46314e58653a1bd1172f3a72
 
-$ cmake --build /tmp/pict-build-lab06-20261019 --parallel 2
+Reproducible source build and usage (run from the lab repository root):
+$ git clone --no-checkout https://github.com/microsoft/pict.git /tmp/lab06-pict-source-ab76
+$ git -C /tmp/lab06-pict-source-ab76 checkout --detach ab76c2548f551fcb46314e58653a1bd1172f3a72
+$ cmake -S /tmp/lab06-pict-source-ab76 -B /tmp/lab06-pict-public-build
+-- PICT version 3.7.4
+-- The CXX compiler identification is GNU 13.3.0
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Configuring done (3.3s)
+-- Generating done (0.1s)
+-- Build files have been written to: /tmp/lab06-pict-public-build
+
+$ cmake --build /tmp/lab06-pict-public-build --parallel 2
+[  2%] Building CXX object api/CMakeFiles/pict_api.dir/deriver.cpp.o
+[  5%] Building CXX object api/CMakeFiles/pict_api.dir/combination.cpp.o
+[  7%] Building CXX object api/CMakeFiles/pict_api.dir/exclusion.cpp.o
+[ 10%] Building CXX object api/CMakeFiles/pict_api.dir/model.cpp.o
+[ 13%] Building CXX object api/CMakeFiles/pict_api.dir/parameter.cpp.o
+[ 15%] Building CXX object api/CMakeFiles/pict_api.dir/pictapi.cpp.o
+[ 18%] Building CXX object api/CMakeFiles/pict_api.dir/task.cpp.o
+[ 21%] Building CXX object api/CMakeFiles/pict_api.dir/worklist.cpp.o
+[ 23%] Linking CXX static library libpict.a
 [ 23%] Built target pict_api
-[ 28%] Built target pict_benchmark
-[ 63%] Built target pict_cli
+[ 26%] Building CXX object benchmark/CMakeFiles/pict_benchmark.dir/pict_benchmark.cpp.o
+[ 28%] Building CXX object cli/CMakeFiles/pict_cli.dir/ccommon.cpp.o
+[ 31%] Building CXX object cli/CMakeFiles/pict_cli.dir/cmdline.cpp.o
+[ 34%] Linking CXX executable pict-benchmark
+[ 36%] Building CXX object cli/CMakeFiles/pict_cli.dir/common.cpp.o
+[ 36%] Built target pict_benchmark
+[ 39%] Building CXX object clidll/CMakeFiles/pict_dll.dir/dllmain.cpp.o
+[ 42%] Building CXX object clidll/CMakeFiles/pict_dll.dir/__/cli/ccommon.cpp.o
+[ 44%] Building CXX object cli/CMakeFiles/pict_cli.dir/cparser.cpp.o
+[ 47%] Building CXX object clidll/CMakeFiles/pict_dll.dir/__/cli/cmdline.cpp.o
+[ 50%] Building CXX object clidll/CMakeFiles/pict_dll.dir/__/cli/common.cpp.o
+[ 52%] Building CXX object cli/CMakeFiles/pict_cli.dir/ctokenizer.cpp.o
+[ 55%] Building CXX object clidll/CMakeFiles/pict_dll.dir/__/cli/cparser.cpp.o
+[ 57%] Building CXX object cli/CMakeFiles/pict_cli.dir/gcd.cpp.o
+[ 60%] Building CXX object clidll/CMakeFiles/pict_dll.dir/__/cli/ctokenizer.cpp.o
+[ 63%] Building CXX object cli/CMakeFiles/pict_cli.dir/gcdexcl.cpp.o
+[ 65%] Building CXX object clidll/CMakeFiles/pict_dll.dir/__/cli/gcd.cpp.o
+[ 68%] Building CXX object clidll/CMakeFiles/pict_dll.dir/__/cli/gcdexcl.cpp.o
+[ 71%] Building CXX object cli/CMakeFiles/pict_cli.dir/gcdmodel.cpp.o
+[ 73%] Building CXX object clidll/CMakeFiles/pict_dll.dir/__/cli/gcdmodel.cpp.o
+[ 76%] Building CXX object cli/CMakeFiles/pict_cli.dir/model.cpp.o
+[ 78%] Building CXX object cli/CMakeFiles/pict_cli.dir/mparser.cpp.o
+[ 81%] Building CXX object clidll/CMakeFiles/pict_dll.dir/__/cli/model.cpp.o
+[ 84%] Building CXX object clidll/CMakeFiles/pict_dll.dir/__/cli/mparser.cpp.o
+[ 86%] Building CXX object cli/CMakeFiles/pict_cli.dir/pict.cpp.o
+[ 89%] Building CXX object cli/CMakeFiles/pict_cli.dir/strings.cpp.o
+[ 92%] Building CXX object clidll/CMakeFiles/pict_dll.dir/__/cli/pict.cpp.o
+[ 94%] Linking CXX executable pict
+[ 94%] Built target pict_cli
+[ 97%] Building CXX object clidll/CMakeFiles/pict_dll.dir/__/cli/strings.cpp.o
+[100%] Linking CXX shared library libpict.so
 [100%] Built target pict_dll
+
+Usage: /tmp/lab06-pict-public-build/cli/pict model [options]
+$ /tmp/lab06-pict-public-build/cli/pict transfer-neg.model
+From	To	Amount	Currency
+Valid	Valid	Normal	Same
+Valid	Valid	Normal	Different
+Valid	Valid	~OverBalance	Different
+Valid	Valid	~Zero	Different
+Valid	~Missing	Normal	Different
+Valid	Valid	~OverBalance	Same
+Valid	Valid	~Zero	Same
+~Missing	Valid	Normal	Same
+~Missing	Valid	Normal	Different
+Valid	~SameAsFrom	Normal	Different
+Valid	Valid	~OverLimit	Different
+~Frozen	Valid	Normal	Same
+Valid	~SameAsFrom	Normal	Same
+~Frozen	Valid	Normal	Different
+Valid	~Missing	Normal	Same
+Valid	Valid	~OverLimit	Same
